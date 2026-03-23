@@ -118,7 +118,7 @@ def _tmdbGet(path: str, params: dict = None):
     except Exception:
         return (
             {
-               "error": "Unexpected error, please try again shortly" 
+               "error": "Unexpected error, please try again shortly q" 
             },
             500,
         )
