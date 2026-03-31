@@ -114,7 +114,7 @@ def _tmdbGet(path: str, params: dict = None):
             503,
         )
 
-    for all other exceptions that havent been included
+    #for all other exceptions that havent been included
     except Exception:
         return (
             {
