@@ -2,3 +2,11 @@ flask
 flask_restful
 requests
 python-dotenv
+fastapi
+uvicorn
+python-jose[cryptography]
+pwdlib[argon2]
+pyjwt
+mysql-connector-python
+pydantic[email]
+python-multipart

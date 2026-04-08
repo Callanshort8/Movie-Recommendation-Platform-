@@ -3,11 +3,6 @@
 
 #STEP 1
 #Import Libaries
-#import flask for web app
-from flask import Flask, jsonify, request
-
-#used to create each endpoint
-from flask_restful import Api, Resource
 
 #import requests to make calls to TMDP API, easier to send HTTP Get, Post 
 import requests
@@ -33,12 +28,6 @@ TmdbUrl = os.getenv("TmdbUrl")
 
 #STEP 3
 #Create Flask and API setup
-
-#create app instance
-app = Flask(__name__)
-
-#create the flask restful api class
-api = Api(app)
 
 #STEP 4
 #TMDB request header 
@@ -187,24 +176,17 @@ def _extractMovieFields(movie: dict) -> dict:
 
     #STEP 4
     #resourse classes
-class healthCheck(Resource):
+def healthCheck():
     #simple health check
-
-    def get(self):
         return {"status": "ok", "service": "tmdbApi"}, 200
 
     #Movie search
 
-class movieSearch(Resource):
+def MovieSearch(query: str, page: int = 1):
     #Search TMDB for movies matching a text query 
-
-    def get(self):
-        query = request.args.get("query", "").strip()
 
         if not query:
             return {"error": "A search query is required"}, 400
-
-        page = request.args.get("page", 1)
 
         data, status = _tmdbGet(
             "/search/movie",
@@ -233,69 +215,67 @@ class movieSearch(Resource):
         #Movie Details
 
 #retrieve movie details by the TMDB ID
-class movieDetail(Resource):
-    def get(self, tmdbID: int):
-        data, status = _tmdbGet(
-            f"/movie/{tmdbID}",
-            params={"append_to_response": "credits"},
-        )
+def getMovieDetails(tmdbID: int):
+     data, status = _tmdbGet(
+        f"/movie/{tmdbID}",
+        params={"append_to_response": "credits"},
+     )
 
-        if "error" in data:
-            return data, status
+    if "error" in data:
+        return data, status
 
-        return _extractMovieFields(data), 200
+    return _extractMovieFields(data), 200
 
 #STEP 6
 #Movie recommendations
     
 #Retrieve TMDB auto generated reccomendations for gven movies
-class movieRecommendations(Resource):
-    def get(self, tmdbID: int):
-        page = request.args.get("page", 1)
 
-        data, status = _tmdbGet(
-            f"/movie/{tmdbID}/recommendations",
-            params={"page": page},
-        )
+def getReccomendations(tmdbID: int, page: int = 1):
 
-        if "error" in data:
-            return data, status
+    data, status = _tmdbGet(
+          f"/movie/{tmdbID}/recommendations",
+          params={"page": page},
+     )
 
-        #transform recommended movies
-        results = [_extractMovieFields(m) for m in data.get("results", [])]
+    if "error" in data:
+           return data, status
 
-        return {
-            "page": data.get("page"),
-            "totalResults": data.get("total_results"),
-            "totalPages": data.get("total_pages"),
-            "results": results,
-        }, 200
+    #transform recommended movies
+    results = [_extractMovieFields(m) for m in data.get("results", [])]
+
+    return {
+         "page": data.get("page"),
+         "totalResults": data.get("total_results"),
+         "totalPages": data.get("total_pages"),
+         "results": results,
+    }, 200
 
 #STEP 7
 #Movie Cast
 
 #Retrieve full cast and director information for a movie 
-class MovieCast(Resource):
-    def get(self, tmdbID: int):
-        data, status = _tmdbGet(f"/movie/{tmdbID}/credits")
 
-        if "error" in data:
-            return data, status
+def getMovieCast(tmdbID: int):
+    data, status = _tmdbGet(f"/movie/{tmdbID}/credits")
 
-        #build casts list
-        cast = [
-            {
-                "name": member.get("name"),
-                "character": member.get("character"),
-                "order": member.get("order"),
-                "profileUrl": (
-                    f"https://image.tmdb.org/t/p/w185{member['profile_path']}"
-                    if member.get("profile_path")
-                    else None
-                ),
-            }
-            for member in data.get("cast", [])
-        ]
+    if "error" in data:
+        return data, status
+
+    #build casts list
+    cast = [
+        {
+             "name": member.get("name"),
+             "character": member.get("character"),
+             "order": member.get("order"),
+             "profileUrl": (
+             f"https://image.tmdb.org/t/p/w185{member['profile_path']}"
+             if member.get("profile_path")
+             else None
+            ),
+        }
+        for member in data.get("cast", [])
+    ]
 
         #Build directors List
         directors = [
@@ -319,14 +299,3 @@ class MovieCast(Resource):
             "directors": directors,
         }, 200
 
-#Register resources with API
-
-api.add_resource(healthCheck, "/health")
-api.add_resource(movieSearch, "/api/movies/search")
-api.add_resource(movieDetail, "/api/movies/<int:tmdbID>")
-api.add_resource(movieRecommendations, "/api/movies/<int:tmdbID>/recommendations")
-api.add_resource(MovieCast, "/api/movies/<int:tmdbID>/cast")
-
-#Entry Point
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)

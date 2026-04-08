@@ -33,9 +33,13 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
+import os 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 #Security Configuration
-SECRET_KEY = "Must-change-to-long-random-jumble"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 #HS256 will be used for the crptographic algorithm for signing tokens
 ALGORITHM = "HS256"
@@ -102,12 +106,20 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
             detail="Token payload missing user identifier",
             headers={"WWW-Authenticate": "Bearer"}
         )
-    #REMINDER IN FUTURE WILL QUERY THE DATABASE FOR NOW SIMPLE DICTIONARY
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary = True)
+    cursor.execute("SELECT email, role FROM Users WHERE email = %s", (email,))
+    user = cursor.fetchone()
+    cursor.close
+    conn.close
 
-    user = {
-        "email": email,
-        "role": payload.get("role", "user")
-    }
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail = "User no longer exists",
+            header = {"WWW-Authenticate": "Bearer"}
+        )
     
     return user
 
