@@ -188,14 +188,14 @@ def MovieSearch(query: str, page: int = 1):
     if not query:
         return {"error": "A search query is required"}, 400
 
-        data, status = _tmdbGet(
-            "/search/movie",
-            params = {
-                "query": query,
-                "page": page,
-                "include_adult": False,
-            },
-        )
+     data, status = _tmdbGet(
+        "/search/movie",
+        params = {
+            "query": query,
+            "page": page,
+            "include_adult": False,
+        },
+     )
 
         #if TmdbGet encounters a error 
         if "error" in data:
@@ -219,12 +219,12 @@ def getMovieDetails(tmdbID: int):
     data, status = _tmdbGet(
         f"/movie/{tmdbID}",
         params={"append_to_response": "credits"},
-     )
+    )
 
-     if "error" in data:
+    if "error" in data:
         return data, status
 
-     return _extractMovieFields(data), 200
+    return _extractMovieFields(data), 200
 
 #STEP 6
 #Movie recommendations
@@ -283,8 +283,7 @@ def getMovieCast(tmdbID: int):
                 "job": crewMember.get("job"),
                 "profileUrl": (
                     f"https://image.tmdb.org/t/p/w185{crewMember['profile_path']}"
-                    if crewMember.get("profile_path")
-                    else None
+                    if crewMember.get("profile_path") else None
                 ),
             }
             for crewMember in data.get("crew", [])

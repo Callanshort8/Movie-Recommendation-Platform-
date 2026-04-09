@@ -15,5 +15,5 @@ dbPool = pooling.MySQLConnectionPool(
 )
 
 def get_db_connection():
-    return dbpool.get_connection()
+    return dbPool.get_connection()
     

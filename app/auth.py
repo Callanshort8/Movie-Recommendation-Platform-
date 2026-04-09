@@ -109,11 +109,13 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         )
     
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary = True)
-    cursor.execute("SELECT email, role FROM Users WHERE email = %s", (email,))
-    user = cursor.fetchone()
-    cursor.close()
-    conn.close()
+    try:
+        cursor = conn.cursor(dictionary = True)
+        cursor.execute("SELECT email, role FROM Users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+    finally:
+        conn.close()
 
     if user is None:
         raise HTTPException(

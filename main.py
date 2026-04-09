@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from dotenv import load_dotenv
+from setupDB import setupDatabase
 
 load_dotenv()
 
@@ -14,10 +15,14 @@ import tmdb
 
 app = FastAPI(title = "Movie Recommendation Platform")
 
+@app.on_event("startup")
+def onStartup():
+    setupDatabase()
+
 #let it be called
 app.add_middleware(
     CORSMiddleware,
-    allow_origins =["*"],
+    allow_origins =["http://localhost:5500", "http://127.0.0.1:5500"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers = ["*"],
@@ -52,7 +57,7 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("Select email, password, role FROM Users Where email = %s", (form.username,))
-    user = vursor.fetchone()
+    user = cursor.fetchone()
 
     cursor.close()
     conn.close()
@@ -103,13 +108,21 @@ def add_to_watchlist(tmdb_id: int, current_user: dict = Depends(get_current_user
 
     movie_data, _ = tmdb.getMovieDetails(tmdb_id)
     cursor.execute(
-        "INSERT IGNORE INTO Movies (canonical_id, title, year, overview, poster_url) VALUES (UUID(), %s, %s, %s, %s)",
-        (movie_data["title"], movie_data["releaseYear"], movie_data["plot"], movie_data["poster_url"])
+        "INSERT IGNORE INTO Movies (canonical_id, tmdb_id, title, year, overview, poster_url) VALUES (UUID(), %s, %s, %s, %s, %s)",
+        (tmdb_id, movie_data["title"], movie_data["releaseYear"], movie_data["plot"], movie_data["poster_url"])
     )
 
     cursor.execute(
         "SELECT canonical_id FROM Movies WHERE title = %s AND year = %s",
-        (movie_data["title"], movie_data["releaseYear"])
+            (movie_data["title"], movie_data["releaseYear"])
+        row = cursor.fetchone()
+        if row:
+            cursor.execute(
+                "INSERT IGNORE INTO watchlist (user_id,  canonical_id) "
+                "SELECT u.user_id, %s FROM Users u WHERE u.email = %s"
+                (row[0], current_user["email"])
+            )
+
     )
 
     conn.commit()
@@ -143,3 +156,4 @@ def delete_review(review_id: str, admin: dict = Depends(require_admin)):
     cursor.close()
     conn.close()
     return {"message": "Review deleted"}
+
