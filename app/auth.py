@@ -34,6 +34,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
 import os 
+from db import get_db_connection
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -111,14 +112,14 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     cursor = conn.cursor(dictionary = True)
     cursor.execute("SELECT email, role FROM Users WHERE email = %s", (email,))
     user = cursor.fetchone()
-    cursor.close
-    conn.close
+    cursor.close()
+    conn.close()
 
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail = "User no longer exists",
-            header = {"WWW-Authenticate": "Bearer"}
+            headers = {"WWW-Authenticate": "Bearer"}
         )
     
     return user

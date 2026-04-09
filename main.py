@@ -1,6 +1,6 @@
-from fastapi import FastAPI, depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.secuirty import 0Auth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,15 +17,15 @@ app = FastAPI(title = "Movie Recommendation Platform")
 #let it be called
 app.add_middleware(
     CORSMiddleware,
-    allowOrigins=["*"],
-    allowCredentials=True,
+    allow_origins =["*"],
+    allow_credentials=True,
     allow_methods=["*"],
-    allowHeaders = ["*"],
+    allow_headers = ["*"],
 
 )
 
 @app.post("/register")
-def register(form: 0Auth2PasswordRequestForm = Depends()):
+def register(form: OAuth2PasswordRequestForm = Depends()):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -36,7 +36,7 @@ def register(form: 0Auth2PasswordRequestForm = Depends()):
 
     hashed = hash_password(form.password)
     cursor.execute(
-        "INSERT INTO Users (email, password) VALUES (%s, %s)"
+        "INSERT INTO Users (email, password) VALUES (%s, %s)",
         (form.username, hashed)
     )
 
@@ -44,16 +44,28 @@ def register(form: 0Auth2PasswordRequestForm = Depends()):
     cursor.close()
     conn.close()
 
+    return {"message": "Account Created"}
+
+@app.post("/login")
+def login(form: OAuth2PasswordRequestForm = Depends()):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("Select email, password, role FROM Users Where email = %s", (form.username,))
+    user = vursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
     if not user or not verify_password(form.password, user["password"]):
-        raise HTTPException (
-            status_code=status.HTTP_401_UNAUTHORIZED
-            detail="Incorrect Email or Password"
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
     token = create_access_token(data={"sub": user["email"], "role": user["role"]})
     return {"access_token": token, "token_type": "bearer"}
-
 #Movie Search Route
 
 @app.get("/api/health")
@@ -123,7 +135,7 @@ def add_review(tmdb_id: int, rating: int, body:str = "", current_user: dict = De
     return {"message": "review submitted"}
 
 @app.delete("/api/admin/reviews/{review_id}")
-def delete.review(review_id: str, admin: dict = Depends(require_admin)):
+def delete_review(review_id: str, admin: dict = Depends(require_admin)):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM Reviews WHERE review_id = %s", (review_id,))

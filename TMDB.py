@@ -232,10 +232,9 @@ def getMovieDetails(tmdbID: int):
 #Retrieve TMDB auto generated reccomendations for gven movies
 
 def getReccomendations(tmdbID: int, page: int = 1):
-
     data, status = _tmdbGet(
-          f"/movie/{tmdbID}/recommendations",
-          params={"page": page},
+        f"/movie/{tmdbID}/recommendations",
+        params={"page": page},
      )
 
     if "error" in data:
