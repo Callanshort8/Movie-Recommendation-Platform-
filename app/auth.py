@@ -34,7 +34,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
 import os 
-from db import get_db_connection
+from database import get_db_connection
 from dotenv import load_dotenv
 
 load_dotenv()

@@ -5,15 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-dbPool = pooling.MyDQLConnectionPool(
+dbPool = pooling.MySQLConnectionPool(
     poolName = "moviePool",
-    poolSIze = 5,
+    pool_size = 5,
     host = os.getenv("DB_HOST"),
     user = os.getenv("DB_USER"),
     password = os.getenv("DB_PASS"),
     database = os.getenv("DB_NAME"), 
 )
 
-def get_connection():
-    return db_pool.get_connection()
+def get_db_connection():
+    return dbpool.get_connection()
     

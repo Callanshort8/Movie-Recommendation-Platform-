@@ -9,7 +9,7 @@ from auth import (
     hash_password, verify_password, create_access_token, get_current_user, require_admin
 )
 
-from db import get_db_connection
+from database import get_db_connection
 import tmdb
 
 app = FastAPI(title = "Movie Recommendation Platform")
@@ -71,9 +71,9 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
 @app.get("/api/health")
 def health():
     result, status_code = tmdb.healthCheck()
-    return results
+    return result
 
-@app.get("api/movies/search")
+@app.get("/api/movies/search")
 def search_movies(query: str, page: int = 1):
     result, status_code = tmdb.MovieSearch(query, page)
     if status_code != 200:
@@ -104,12 +104,12 @@ def add_to_watchlist(tmdb_id: int, current_user: dict = Depends(get_current_user
     movie_data, _ = tmdb.getMovieDetails(tmdb_id)
     cursor.execute(
         "INSERT IGNORE INTO Movies (canonical_id, title, year, overview, poster_url) VALUES (UUID(), %s, %s, %s, %s)",
-        (movie_data["TITLE"], movie_data["releaseYear"], movie_data["plot"], movie_data["poster_url"])
+        (movie_data["title"], movie_data["releaseYear"], movie_data["plot"], movie_data["poster_url"])
     )
 
     cursor.execute(
         "SELECT canonical_id FROM Movies WHERE title = %s AND year = %s",
-        (movie_data["title"], movie_data["email"])
+        (movie_data["title"], movie_data["releaseYear"])
     )
 
     conn.commit()
@@ -131,7 +131,7 @@ def add_review(tmdb_id: int, rating: int, body:str = "", current_user: dict = De
 
     conn.commit()
     cursor.close()
-    conn.close
+    conn.close()
     return {"message": "review submitted"}
 
 @app.delete("/api/admin/reviews/{review_id}")

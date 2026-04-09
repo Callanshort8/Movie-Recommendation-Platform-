@@ -221,7 +221,7 @@ def getMovieDetails(tmdbID: int):
         params={"append_to_response": "credits"},
      )
 
-    if "error" in data:
+     if "error" in data:
         return data, status
 
     return _extractMovieFields(data), 200
@@ -268,16 +268,16 @@ def getMovieCast(tmdbID: int):
              "character": member.get("character"),
              "order": member.get("order"),
              "profileUrl": (
-             f"https://image.tmdb.org/t/p/w185{member['profile_path']}"
-             if member.get("profile_path")
-             else None
+                 f"https://image.tmdb.org/t/p/w185{member['profile_path']}"
+                 if member.get("profile_path")
+                 else None
             ),
         }
         for member in data.get("cast", [])
     ]
 
         #Build directors List
-        directors = [
+    directors = [
             {
                 "name": crewMember.get("name"),
                 "job": crewMember.get("job"),
