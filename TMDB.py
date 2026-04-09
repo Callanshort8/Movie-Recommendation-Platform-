@@ -185,8 +185,8 @@ def healthCheck():
 def MovieSearch(query: str, page: int = 1):
     #Search TMDB for movies matching a text query 
 
-        if not query:
-            return {"error": "A search query is required"}, 400
+    if not query:
+        return {"error": "A search query is required"}, 400
 
         data, status = _tmdbGet(
             "/search/movie",
@@ -216,7 +216,7 @@ def MovieSearch(query: str, page: int = 1):
 
 #retrieve movie details by the TMDB ID
 def getMovieDetails(tmdbID: int):
-     data, status = _tmdbGet(
+    data, status = _tmdbGet(
         f"/movie/{tmdbID}",
         params={"append_to_response": "credits"},
      )
@@ -224,7 +224,7 @@ def getMovieDetails(tmdbID: int):
      if "error" in data:
         return data, status
 
-    return _extractMovieFields(data), 200
+     return _extractMovieFields(data), 200
 
 #STEP 6
 #Movie recommendations
@@ -238,7 +238,7 @@ def getReccomendations(tmdbID: int, page: int = 1):
      )
 
     if "error" in data:
-           return data, status
+        return data, status
 
     #transform recommended movies
     results = [_extractMovieFields(m) for m in data.get("results", [])]
@@ -292,9 +292,9 @@ def getMovieCast(tmdbID: int):
         ]
 
         #return TMDB with data
-        return {
-            "tmdbID": tmdbID,
-            "cast": cast,
-            "directors": directors,
-        }, 200
+    return {
+         "tmdbID": tmdbID,
+         "cast": cast,
+         "directors": directors,
+    }, 200
 
