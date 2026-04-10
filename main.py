@@ -116,13 +116,13 @@ def add_to_watchlist(tmdb_id: int, current_user: dict = Depends(get_current_user
         "SELECT canonical_id FROM Movies WHERE title = %s AND year = %s",
             (movie_data["title"], movie_data["releaseYear"])
     )
-        row = cursor.fetchone()
-        if row:
-            cursor.execute(
-                "INSERT IGNORE INTO watchlist (user_id,  canonical_id) "
-                "SELECT u.user_id, %s FROM Users u WHERE u.email = %s",
-                (row[0], current_user["email"])
-            )
+    row = cursor.fetchone()
+    if row:
+        cursor.execute(
+            "INSERT IGNORE INTO watchlist (user_id,  canonical_id) "
+            "SELECT u.user_id, %s FROM Users u WHERE u.email = %s",
+            (row[0], current_user["email"])
+        )
 
     
 
