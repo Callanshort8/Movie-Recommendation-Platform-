@@ -1,14 +1,21 @@
-from database import get_db_connection()
+from database import get_db_connection
 
 def setupDatabase():    
     conn = get_db_connection()
     cursor = conn.cursor()
 
     commands = [
-        """ALTER TABLE Movies ADD COLUMN IF NOT EXISTS tmdb_id INT UNIQUE"""
+        """ALTER TABLE Movies ADD COLUMN IF NOT EXISTS tmdb_id INT UNIQUE""",
 
-        """ALTER TABLE Users ADD COLUMN IF NOT EXISTS role
-            VARCHAR(20) DEFAULT 'user'"""
+        """ALTER TABLE Users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user'""",
+
+        """CREATE TABLE IF NOT EXISTS Users (
+            user_id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(255) UNIQUE NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            role VARCHAR(20) DEFAULT 'user',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )""",
 
         """CREATE TABLE IF NOT EXISTS Watchlist (
         watchlist_id INT AUTO_INCREMENT PRIMARY KEY,

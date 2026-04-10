@@ -112,8 +112,8 @@ def _tmdbGet(path: str, params: dict = None):
             500,
         )
 
-    #STEP 3
-    #extract fields from TMDB database
+#STEP 3
+#extract fields from TMDB database
 def _extractMovieFields(movie: dict) -> dict:
 
     #extract poster URL
@@ -174,42 +174,41 @@ def _extractMovieFields(movie: dict) -> dict:
     }
     
 
-    #STEP 4
-    #resourse classes
+#STEP 4
+#resourse classes
 def healthCheck():
     #simple health check
-        return {"status": "ok", "service": "tmdbApi"}, 200
+    return {"status": "ok", "service": "tmdbApi"}, 200
 
-    #Movie search
-
+#Movie search
 def MovieSearch(query: str, page: int = 1):
     #Search TMDB for movies matching a text query 
 
     if not query:
         return {"error": "A search query is required"}, 400
 
-     data, status = _tmdbGet(
+    data, status = _tmdbGet(
         "/search/movie",
         params = {
             "query": query,
             "page": page,
             "include_adult": False,
         },
-     )
+    )
 
-        #if TmdbGet encounters a error 
-        if "error" in data:
-            return data, status
+    #if TmdbGet encounters a error 
+    if "error" in data:
+        return data, status
 
-        #transform results
-        results = [_extractMovieFields(m) for m in data.get("results", [])]
+    #transform results
+    results = [_extractMovieFields(m) for m in data.get("results", [])]
 
-        return {
-            "page": data.get("page"),
-            "totalResults": data.get("total_results"),
-            "totalPages": data.get("total_pages"),
-            "results": results,
-        }, 200
+    return {
+        "page": data.get("page"),
+        "totalResults": data.get("total_results"),
+        "totalPages": data.get("total_pages"),
+        "results": results,
+    }, 200
 
         #STEP 5 
         #Movie Details

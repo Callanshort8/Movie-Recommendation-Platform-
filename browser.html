@@ -49,7 +49,7 @@
     <div class="card m-4 bg-secondary">
         <div class="card-body">
             <div class="container text-center">
-                <div class="row g-4">
+                <div class="row g-4" id="movie-grid">
 
                     <div class="col-md-4">
                         <div class="card bg-dark text-light border-0 h-100">
@@ -95,38 +95,36 @@
 
 
 
-    <script src="api.js">
+    <script src="api.js"></script>
+    <script>
         requireAuth();
         const searchInput = document.querySelector('input[type="text"]');
-        const genreSelect = document.querySelector('select');
         const movieGrid = document.getElementById('movie-grid');
 
         async function Search() {
             const query = searchInput.value.trim();
             if (!query) return;
-            const data = await apiGet('/api/movies/search?query=$[encodeURIComponent(query)]');
-            movieGrid.innerHTML = data.results.map(m => '
-            <div class="col-md-4>
-                <div class="col-md-4">
+            const data = await apiGet(`/api/movies/search?query=${encodeURIComponent(query)}`);
+            movieGrid.innerHTML = data.results.map(m => `
+            <div class="col-md-4">
                     <img src="${m.poster_url || 'placeholder.jpg'}" class="card-img-top">
                     <div class="card-body d-flex flex-column text-center">
-                        <h5 class="card-title">${m.title}</h5
+                        <h5 class="card-title">${m.title}</h5>
                         <p class = "card-text">Year: ${m.releaseYear || 'N/A'}</p>
                         <p class = "card-text"> Rating: ${m.rating ? m.rating.toFixed(1) + '/10' : 'N/A'}</p>
-                        <button onclick="addToWatchList(${m.tmdbID})" class="btn btn-secondary mt-auto">+ Watchlist</button>
+                        <button onclick="addToWatchList(${m.tmdbId})" class="btn btn-secondary mt-auto">+ Watchlist</button>
                     </div>
-                </div>
             </div>
-        ').join('');
+        `).join('');
         }
         async function addToWatchList(tmdbId) {
-            await fetch('${API}/api/watchlist/${tmdbid}', {
+            await fetch(`${API}/api/watchlist/${tmdbId}`, {
                 method: 'POST', headers: authHeaders()
             });
             alert('Added to watchlist');
         }
 
-    searchInput.addEventListener('keydown', e => {if (e.key === 'Enter') search(); });
+    searchInput.addEventListener('keydown', e => {if (e.key === 'Enter') Search(); });
     </script>
 </body>
 </html>

@@ -5,7 +5,7 @@ function getToken() {
     return localStorage.getItem('token');
 }
 
-function authHeaders()n{
+function authHeaders(){
     return {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${getToken()}'
@@ -23,7 +23,7 @@ async function apiGet(path) {
 }
 
 async function apiPost(path, body = {}) {
-    const res await fetch(API + path, {
+    const res = await fetch(API + path, {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify(body)
