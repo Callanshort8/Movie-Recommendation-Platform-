@@ -11,7 +11,7 @@ from auth import (
 )
 
 from database import get_db_connection
-import tmdb
+import TMDB
 
 app = FastAPI(title = "Movie Recommendation Platform")
 

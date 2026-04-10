@@ -5,10 +5,7 @@ def setupDatabase():
     cursor = conn.cursor()
 
     commands = [
-        """ALTER TABLE Movies ADD COLUMN IF NOT EXISTS tmdb_id INT UNIQUE""",
-
-        """ALTER TABLE Users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user'""",
-
+        
         """CREATE TABLE IF NOT EXISTS Users (
             user_id INT AUTO_INCREMENT PRIMARY KEY,
             email VARCHAR(255) UNIQUE NOT NULL,
