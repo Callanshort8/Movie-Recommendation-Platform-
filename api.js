@@ -1,5 +1,5 @@
 //shared by all pages
-const API = 'http://localhost:8000';
+const API = 'http://https://ubiquitous-chainsaw-7v5gw5g5wpw6247q-8000.app.github.dev/';
 
 function getToken() {
     return localStorage.getItem('token');
