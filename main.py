@@ -115,6 +115,22 @@ def cast(tmdb_id: int):
 
 #User Routes
 
+@app.get("/api/recommendations")
+def get_recommendations(current_user: dict = Depends(get_current_user)):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute(
+        """SELECT tmdb_id as id, title, year, poster_URL
+            From Movies
+            ORDER BY RAND()
+            LIMIT 6"""
+    )
+
+    movies = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return {"movies: movies"}
 @app.post("/api/watchlist/{tmdb_id}")
 def add_to_watchlist(tmdb_id: int, current_user: dict = Depends(get_current_user)):
     conn = get_db_connection()

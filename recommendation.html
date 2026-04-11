@@ -22,7 +22,7 @@
         <a class="nav-link mx-3" href="browser.html">Browse</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link mx-3" href="index.html">Recommendations</a>
+        <a class="nav-link mx-3" href="recommendation.html">Recommendations</a>
       </li>
       <li class="nav-item">
         <a class="nav-link mx-3" href="ratings.html">My Ratings</a>
@@ -64,13 +64,14 @@
         <div class = "col-md-4"> 
             <div class = "card bg-dark text-light border-0 h-100">
                 <img src = "${m.poster_url || 'placeholder.jpg'}" class="card-img-top">
-                <div class = "card-body d-flex flex-colum text-center">
+                <div class = "card-body d-flex flex-column text-center">
                     <h5 class = "card-title">${m.title}</h5>
-                    <p class = "card-text">Release date: ${m.releaseDate || 'N/A'}</p>
+                    <p class = "card-text">Year: ${m.year || 'N/A'}</p>
                     <p class = "card-text">Ratings: ${m.rating ? m.rating.toFixed(1) + '/10' : 'N/A'}</p>
                     <a href="#" class ="btn btn-secondary mt-auto">Watch now</a>
                 </div>
             </div>
+        </div>
         `).join("");
     }
     loadRecs();
