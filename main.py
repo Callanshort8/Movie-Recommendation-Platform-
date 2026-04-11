@@ -135,7 +135,7 @@ def get_recommendations(current_user: dict = Depends(get_current_user)):
                     else "placeholder.jpg"
             )
             }
-            for m in result.get("raw_movies" or [])[:6]
+            for m in raw_movies[:6]
         ]
         return {"movies": movies}
     except Exception as e:
