@@ -29,3 +29,4 @@ async function apiPost(path, body = {}) {
         body: JSON.stringify(body)
     });
     return res.json();
+}
