@@ -120,21 +120,27 @@ def get_recommendations(current_user: dict = Depends(get_current_user)):
     try:
         result, status_code = tmdb.MovieSearch("action", 1)
         if status_code != 200:
-            raise HTTPException(status_code=status_code, detail=result)
+            return{"movies": []}
     
+        raw_movies = result.get("result") if isinstance(result, dict) else result
+
         movies = [
          {
-            "id": m["tmdbId"],
+            "id": m["id"],
             "title": m["title"],
             "year": m.get("releaseYear"),
-            "poster_url": m.get("poster_url")
+            "poster_url": (
+                f"https://image.tmdb.org/t/p/w500{m.get('poster_path')}"
+                    if m.get("poster_path")
+                    else "placeholder.jpg"
+            )
             }
-            for m in result.get("results", [])[:6]
+            for m in result.get("raw_movies" or [])[:6]
         ]
         return {"movies": movies}
     except Exception as e:
         print("ERROR: ", e)
-        return{"movies": []}
+        raise e
 
 @app.post("/api/watchlist/{tmdb_id}")
 def add_to_watchlist(tmdb_id: int, current_user: dict = Depends(get_current_user)):
