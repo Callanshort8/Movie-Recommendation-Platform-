@@ -2,41 +2,16 @@
 Recommends movies to you
 
 
+Unfortunatly it is not fully working as it being delayed and soem parts of the frontend and backend are just not working and 
+coperating with each other 
 
+and delays with aws learner becuase of the limited budget that is given 
 
-DATABASE
+to use first download the requirments file with 
+pip install -r requirements.txt
 
-endpoint: movieplatformdatabase.ct6m2rqy8ajq.us-east-1.rds.amazonaws.com
+then to run the backend use in the terminal
+uvicorn main:app --reload
 
-username: admin
-password: Password1
-
-TABLES
-
-Movies
-  - canonical_id PK
-  - title
-  - year
-  - overview
-  - poster_url
-
-Genres
-  - genre PK
-
-External_ids
-  - external_id PK
-
-Ratings
-  - canonical_id FK
-  - site
-  - rating
-  - rating_id PK
-
-MoviesGenres (Joining Table)
-  - genre PK FK
-  - canonical_id PK FK
-
-MoviesExternal_ids
-  - external_id PK FK
-  - canonical PK FK
-    
+and the front end use
+python -m http.server 5500
