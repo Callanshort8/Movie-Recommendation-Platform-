@@ -10,3 +10,6 @@ pyjwt
 mysql-connector-python
 pydantic[email]
 python-multipart
+pytest 
+httpx 
+pytest-mock
