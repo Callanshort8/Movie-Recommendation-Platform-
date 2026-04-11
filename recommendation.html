@@ -59,6 +59,7 @@
 
     async function loadRecs() {
         const data = await apiGet("/api/recommendations");
+        console.log("API response:", data);
 
         if (!data.movies) {
             console.error("No movies returned", data)
