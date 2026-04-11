@@ -63,12 +63,11 @@
         requireAuth();
         const searchInput = document.querySelector('input[type="text"]');
         const movieGrid = document.getElementById('movie-grid');
-        const genreSelect = document.getElementById("genre-select");
 
         async function Search() {
             const query = searchInput.value.trim();
             if (!query) return;
-            const data = await apiGet(`api//movies/search?query=${encodeURIComponent(query)}`);
+            const data = await apiGet(`/api/movies/search?query=${encodeURIComponent(query)}`);
             movieGrid.innerHTML = data.results.map(m => `
             <div class="col-md-4">
                <div class = "card bg-dark text-light border-0 h-100">
@@ -76,7 +75,6 @@
                     <div class="card-body d-flex flex-column text-center">
                         <h5 class="card-title">${m.title}</h5>
                         <p class = "card-text">Year: ${m.releaseYear || 'N/A'}</p>
-                        <p class = "card-text"> Rating: ${m.rating ? m.rating.toFixed(1) + '/10' : 'N/A'}</p>
                         <button onclick="addToWatchlist(${m.tmdbId})" class="btn btn-secondary mt-auto">+ Watchlist</button>
                     </div>
                 </div>
@@ -93,7 +91,6 @@
                     <div class="card-body d-flex flex-column text-center">
                         <h5 class="card-title">${m.title}</h5>
                         <p class="card-text">Year: ${m.year ?? "N/A"}</p>
-                        <p class = "card-text">Rating: ${m.rating ? m.rating.toFixed(1) + "/10" : "N/A"}</p>
                         <button onclick="addToWatchlist(${m.id})"
                             class = "btn btn-secondary mt-auto">+ WatchList</button>
                     </div>
@@ -101,32 +98,6 @@
             </div>
             `).join("");
         }
-
-        genreSelect.addEventListener("change", async () => {
-            const genre = genreSelect.value;
-
-            if(genre === "All genres") {
-                loadAllMovies();
-                return;
-            }
-
-            const data = await apiGet(`/api/movies?genre=${encodeURIComponent(genre)}`);
-
-            movieGrid.innerHTML = data.movies.map(m =>`
-            <div class="col-md-4">
-                 <div class="card bg-dark text-light border-0 h-100">
-                    <img src="${m.poster_url || 'placeholder.jpg'}" class="card-img-top">
-                    <div class="card-body d-flex flex-column text-center">
-                        <h5 class="card-title">${m.title}</h5>
-                        <p class="card-text">Year: ${m.year ?? "N/A"}</p>
-                        <p class = "card-text">Rating: ${m.rating ? m.rating.toFixed(1) + "/10" : "N/A"}</p>
-                        <button onclick="addToWatchlist(${m.id})"
-                            class = "btn btn-secondary mt-auto">+ WatchList</button>
-                    </div>
-                </div>
-            </div>
-            `).join("");
-        })
 
         async function addToWatchlist(id) {
             await fetch(`${API}/api/watchlist/${id}`, {

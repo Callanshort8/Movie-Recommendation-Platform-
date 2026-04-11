@@ -90,15 +90,9 @@ def get_movies(genre:str = None):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    if genre:
-        cursor.execute(
-            "SELECT tmdb_id as id, title, year, poster_url, rating FROM Movies WHERE genre = %s",
-            (genre,)
-        )
-    else:
-        cursor.execute(
-            "SELECT tmdb_id as id, title, year, poster_url, rating FROM Movies"
-        )
+    cursor.execute(
+        "SELECT tmdb_id as id, title, year, poster_url, rating FROM Movies"
+    )
 
     movies = cursor.fetchall()
     cursor.close()
