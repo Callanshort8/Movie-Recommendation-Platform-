@@ -22,7 +22,7 @@ def onStartup():
 #let it be called
 app.add_middleware(
     CORSMiddleware,
-    allow_origins =["http://localhost:5500", "http://127.0.0.1:5500", "https://ubiquitous-chainsaw-7v5gw5g5wpw6247q-5000.app.github.dev"],
+    allow_origins =["http://localhost:5500", "http://127.0.0.1:5500", "https://ubiquitous-chainsaw-7v5gw5g5wpw6247q-5500.app.github.dev"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers = ["*"],
