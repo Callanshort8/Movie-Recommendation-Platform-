@@ -22,7 +22,7 @@ def onStartup():
 #let it be called
 app.add_middleware(
     CORSMiddleware,
-    allow_origins =["http://localhost:5500", "http://127.0.0.1:5500", "https://ubiquitous-chainsaw-7v5gw5g5wpw6247q-5500.app.github.dev"],
+    allow_origins =["https://ubiquitous-chainsaw-7v5gw5g5wpw6247q-5500.app.github.dev"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers = ["*"],
@@ -130,7 +130,8 @@ def get_recommendations(current_user: dict = Depends(get_current_user)):
     movies = cursor.fetchall()
     cursor.close()
     conn.close()
-    return {"movies: movies"}
+    return {"movies": movies}
+    
 @app.post("/api/watchlist/{tmdb_id}")
 def add_to_watchlist(tmdb_id: int, current_user: dict = Depends(get_current_user)):
     conn = get_db_connection()

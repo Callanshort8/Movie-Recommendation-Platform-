@@ -60,6 +60,11 @@
     async function loadRecs() {
         const data = await apiGet("/api/recommendations");
 
+        if (!data.movies) {
+            console.error("No movies returned", data)
+            return;
+        }
+
         document.getElementById("recs-grid").innerHTML = data.movies.map(m => `
         <div class = "col-md-4"> 
             <div class = "card bg-dark text-light border-0 h-100">
