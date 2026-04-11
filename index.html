@@ -76,13 +76,14 @@
 
         if (response.ok) {
           localStorage.setItem("token", data.access_token);
+          localStorage.setItem("role", data.role)
 
           if (data.role === "admin") {
             window.location.href = "dashboard.html";
           } else {
             window.location.href = "browser.html"
           }
-          
+
         }else {
           alert(data.detail || "login failed");
         }

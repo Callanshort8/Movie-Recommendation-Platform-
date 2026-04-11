@@ -11,7 +11,7 @@ from auth import (
 )
 
 from database import get_db_connection
-import TMDB
+import TMDB as tmdb
 
 app = FastAPI(title = "Movie Recommendation Platform")
 
@@ -70,7 +70,7 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
         )
 
     token = create_access_token(data={"sub": user["email"], "role": user["role"]})
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "role": user["role"]}
 #Movie Search Route
 
 @app.get("/api/health")
@@ -84,6 +84,26 @@ def search_movies(query: str, page: int = 1):
     if status_code != 200:
         raise HTTPException(status_code=status_code, detail=result)
     return result
+
+@app.get("/api/movies")
+def get_movies(genre:str = None):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    if genre:
+        cursor.execute(
+            "SELECT tmdb_id as id, title, year, poster_url, rating FROM Movies WHERE genre = %s",
+            (genre,)
+        )
+    else:
+        cursor.execute(
+            "SELECT tmdb_id as id, title, year, poster_url, rating FROM Movies"
+        )
+
+    movies = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return {"movies": movies}
 
 @app.get("/api/movies/{tmdb_id}")
 def movie_detail(tmdb_id: int):

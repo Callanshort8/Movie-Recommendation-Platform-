@@ -68,7 +68,7 @@
         async function Search() {
             const query = searchInput.value.trim();
             if (!query) return;
-            const data = await apiGet(`/api/movies/search?query=${encodeURIComponent(query)}`);
+            const data = await apiGet(`api//movies/search?query=${encodeURIComponent(query)}`);
             movieGrid.innerHTML = data.results.map(m => `
             <div class="col-md-4">
                <div class = "card bg-dark text-light border-0 h-100">
