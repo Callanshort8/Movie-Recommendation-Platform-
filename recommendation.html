@@ -36,7 +36,7 @@
   </div>
 </nav>
 
-<h1 class="mt-2 ms-2 text-align center">Recommended Movies</h1>
+<h1 class="mt-2 ms-2 text-center">Recommended Movies</h1>
 
 <div class="card m-4">
     <div class="card-body bg-secondary text-light">
@@ -47,49 +47,34 @@
 <div class="card m-4 bg-secondary">
     <div class="card-body">
         <div class="container text-center">
-            <div class="row">
+            <div class = "row" id="recs-grid">
 
-                <div class="col-md-4">
-                        <div class="card bg-dark text-light border-0 h-100">
-                            <img src="the_good_the_bad_and_the_ugly.jpg" class="card-img-top">
-                            <div class="card-body d-flex flex-column text-center">
-                                <h5 class="card-title">The Good, the Bad, and the Ugly</h5>
-                                <p class="card-text">Release date: 22 August 1968</p>
-                                <p class="card-text">Ratings: 8.8/10</p>
-                                <a href="#" class="btn btn-secondary mt-auto">Watch now</a>
-                            </div>
-                        </div>
-                    </div>
-
-               <div class="col-md-4">
-                        <div class="card movie-card bg-dark text-light border-0 h-100">
-                            <img src="inglourious_basterds.jpg" class="card-img-top">
-                            <div class="card-body d-flex flex-column text-center">
-                                <h5 class="card-title">Inglourious Basterds</h5>
-                                <p class="card-text">Release date: 21 August 2009</p>
-                                <p class="card-text">Ratings: 8.4/10</p>
-                                <a href="#" class="btn btn-secondary mt-auto">Watch now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                <div class="col-md-4">
-                        <div class="card movie-card bg-dark text-light border-0 h-100">
-                            <img src="the_shawshank_redemption.jpg" class="card-img-top">
-                            <div class="card-body d-flex flex-column text-center">
-                                <h5 class="card-title">The Shawshank Redemption</h5>
-                                <p class="card-text">Release date: 23 September 1994</p>
-                                <p class="card-text">Ratings: 9.3/10</p>
-                                <a href="#" class="btn btn-secondary mt-auto">Watch now</a>
-                            </div>
-                        </div>
-                    </div>
-
-
+            </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    requireAuth();
 
+    async function loadRecs() {
+        const data = await apiGet("/api/recommendations");
+
+        document.getElementById("recs-grid").innerHTML = data.movies.map(m => `
+        <div class = "col-md-4"> 
+            <div class = "card bg-dark text-light border-0 h-100">
+                <img src = "${m.poster_url || 'placeholder.jpg'}" class="card-img-top">
+                div class = "card-body d-flex flex-colum text-center">
+                    <h5 class = "card-title">${m.title}</h5>
+                    <p class = "card-text">Release date: ${m.releaseDate || 'N/A'}</p>
+                    <p class = "card-text">Ratings: ${m.rating ? m.rating.toFixed(1) + '/10' : 'N/A'}</p>
+                    <a href="#" class ="btn btn-secondary mt-auto">Watch now</a>
+                </div>
+            </div>
+        </div>
+        `).join("");
+    }
+    loadRecs();
+</script>
 </body>
 </html>

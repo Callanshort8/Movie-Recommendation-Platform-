@@ -47,25 +47,25 @@
 
         <div class="row mt-3">
           <div class="col-md-4">
-            <div class="card bg-dark text-light p-3 text-center">
-              Pending Reviews
+            <div class="card bg-dark text-light p-3 text-center" id="stat-pending">
+              Pending Reviews: -
             </div>
           </div>
           <div class="col-md-4">
-            <div class="card bg-dark text-light p-3 text-center">
-              Approved Reviews
+            <div class="card bg-dark text-light p-3 text-center" id="stat-approved">
+              Approved Reviews: -
             </div>
           </div>
           <div class="col-md-4">
-            <div class="card bg-dark text-light p-3 text-center">
-              Rejected Reviews
+            <div class="card bg-dark text-light p-3 text-center" id="stat-rejected">
+              Rejected Reviews: -
             </div>
           </div>
             
         </div>
     </div>
 
-       <div class="section-card mb-4 bg-secondary">
+       <div class="section-card mb-4 bg-secondary" id = "review-List">
          <h5>Filter Reviews</h5>
 
          <div class="d-flex justify-content-between mt-3">
@@ -145,5 +145,48 @@
          </div>
        </div>
      </div>
+     <script>
+        requireAuth();
+        let currentFilter = "all";
+        function renderReview(r) {
+          const statusColor = {pending: "warning", approved: "success", rejected: "danger" }[r.status] || "secondary";
+          return `
+            <div class = "review-card mb-3" id="review-${r.id}">
+              <div class = "d-flex justify-content-between">
+                <div>
+                  <strong>${r.movieTitle}</strong><br>
+                  <small>${r.username}</small><br>
+                  <small>Rating: ${r.rating}/10</small>
+                </div>
+                <div class = "text-${statusColor}">${r.status}</div>
+                </div>
+                <div class = "mt-3">
+                  <input type="text" class="form-control" value="${r.content}" readonly>
+                </div>  
+                ${r.status == "pending" ? `
+                <div class = "mt-3">
+                  <button class="btn btn-success btn-sm" onclick="updateReview(${r.id}, 'approved')">Approve</button>
+                  <button class="btn btn-danger btn-sm" onclick="updateReview(${r.id}, 'rejected')">Reject</button>
+                </div>` : ""}
+              </div>`;
+        }
+
+        async function loadReviews(filter = "all") {
+          currentFilter = filter;
+          const path = filter === "all" ? "/api/admin/reviews" : `/api/admin/reviews?status=${filter}`;
+          const data = await apiGet(path);
+          document.getElementById("review-list").innerHTML = data.reviews.map(renderReview).join("");
+          document.getElementById("stat-pending").textContent = "Pending: " + (data.stats?.pending ?? 0);
+          document.getElementById("stat-approved").textContent = "Approved: " + (data.stats?.approved ?? 0);
+          document.getElementById("stat-rejected").textContent = "Rejected: " + (data.stats?.rejected ?? 0); 
+        }
+
+        async function updateReview(id, status) {
+          await apiPost(`/api/admin/reviews/${id}`, { status });
+          loadReviews(currentFilter);
+        }
+
+        loadReviews();
+     </script>
    </body>
 </html>

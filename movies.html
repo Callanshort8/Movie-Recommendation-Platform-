@@ -43,7 +43,7 @@
 
       <div class="section-card mb-4 d-flex justify-content-between align-items-center bg-secondary text-light">
         <h5>Movie Management</h5>
-        <button class="btn btn-dark">AddMovie</button>
+        <button class="btn btn-dark" onclick="window.location.href='add-movie.html'">AddMovie</button>
       </div>
 
       <div class="section-card bg-secondary text-light">
@@ -61,7 +61,7 @@
             </tr>
           </thead>
 
-          <tbody>
+          <tbody id = "movieTableBody">
             <tr>
               <td>Movie Title 1</td>
               <td>1999</td>
@@ -98,5 +98,38 @@
         </table>
       </div>
     </div>
+    <script>
+      requireAuth()
+      async function loadMovies() {
+        const data = await apiGet("/api/movies");
+        const tbody = document.getElementById("movieTableBody");
+        tbody.innerHTML = data.movies.map(m => `
+        <tr>
+            <td>${m.title}</td>
+            <td>${m.year}</td>
+            <td>${m.director}</td>
+            <td>${m.rating?.toFixed(1) ?? "-"}</td>
+            <td>
+              <button class="btn btn-secondary btn-sm" onclick="editMovie(${m.id})">Edit</button>"
+              <button class="btn btn-danger btn-sm" onclick="deleteMovie(${m.id})>Delete</button>"
+            </td>
+        </tr>
+        `).join("");
+      }
+
+      async function deleteMovie(id) {
+        if (!confirm("Delete this movie?")) return;
+        await fetch(`${API}/api/movies/${id}`, {
+          method: "DELETE", headers: authHeaders()
+        });
+        loadMovies();
+      }
+
+      function editMovie(id) {
+        window.location.href = `edit-movie.html?id=${id}`;
+      }
+
+      loadMovies();
+    </script>
   </body>
 </html>

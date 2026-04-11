@@ -41,34 +41,34 @@
             <div class="col-3 d-flex">
                 <div class="card p-3 bg-dark text-light">
                     <p>Total Movies</p>
-                    <h4>12</h4>
+                    <h4 id ="stat-movies">-</h4>
                 </div>
             </div>
 
             <div class="col-3 d-flex">
                 <div class="card p-3 bg-dark text-light">
                     <p>Total Reviews</p>
-                    <h4>7.5</h4>
+                    <h4 id="stat-reviews">-</h4>
                 </div>
             </div>
 
           <div class="col-3 d-flex">
                 <div class="card p-3 bg-dark text-light">
                     <p>Pending Reviews</p>
-                    <h4>7.5</h4>
+                    <h4 id = "stat-pending">-</h4>
                 </div>
             </div>
           
             <div class="col-3 d-flex">
                 <div class="card p-3 bg-dark text-light">
                     <p>Total Users</p>
-                    <h4>Comedy</h4>
+                    <h4 id = "stat-users">-</h4>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+<div id="activityList">
     <div class="container mt-4">
       <div class="card p-4 bg-secondary">
         <h3 class="mb-3">Recent Activity</h3>
@@ -90,5 +90,27 @@
         </div>
     </div>
     </div>
+</div>
+    <script src = "api.js"></script>
+    <script>
+        requireAuth();
+        async function loadStats(){
+          const data = await apiGet("/api/admin/stats");
+          document.getElementById("stat-movies").textContent = data.totalMovies ?? "-";
+          document.getElementById("stat-reviews").textContent = data.totalReviews ?? "-";
+          document.getElementById("stat-pending").textContent = data.pendingReviews ?? "-";
+          document.getElementById("stat-users").textContent = data.totalUsers ?? "-";
+
+          const activity = await apiGet("/api/admin/activity");
+          const list = document.getElementById("activityList");
+          list.innerHTML = activity.items.map(item => `
+            <div class="card bg-dark text-light p-3 mb-2">
+              <p class="mb-0">${item.description}</p>
+              <small class="text-muted">${new Date(item.timestamp).toLocaleString()}</small>
+              </div>
+          `).join("");
+          }
+        loadStats();
+    </script>
   </body>
 </html>
