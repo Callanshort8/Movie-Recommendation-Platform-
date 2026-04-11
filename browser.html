@@ -19,7 +19,7 @@
         <a class="nav-link mx-3" href="browser.html">Browse</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link mx-3" href="index.html">Recommendations</a>
+        <a class="nav-link mx-3" href="recommendations.html">Recommendations</a>
       </li>
       <li class="nav-item">
         <a class="nav-link mx-3" href="ratings.html">My Ratings</a>
@@ -71,6 +71,7 @@
             const data = await apiGet(`/api/movies/search?query=${encodeURIComponent(query)}`);
             movieGrid.innerHTML = data.results.map(m => `
             <div class="col-md-4">
+               <div class = "card bg-dark text-light border-0 h-100">
                     <img src="${m.poster_url || 'placeholder.jpg'}" class="card-img-top">
                     <div class="card-body d-flex flex-column text-center">
                         <h5 class="card-title">${m.title}</h5>

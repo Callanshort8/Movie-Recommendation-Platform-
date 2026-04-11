@@ -65,85 +65,22 @@
         </div>
     </div>
 
-       <div class="section-card mb-4 bg-secondary" id = "review-List">
+       <div class="section-card mb-4 bg-secondary">
          <h5>Filter Reviews</h5>
 
          <div class="d-flex justify-content-between mt-3">
-           <button class="btn btn-dark">All</button>
-           <button class="btn btn-dark">Pending</button>
-           <button class="btn btn-dark">Approved</button>
-           <button class="btn btn-dark">Rejected</button>
+           <button class="btn btn-dark" onclick="loadReviews('all')">All</button>
+           <button class="btn btn-dark" onclick="loadReviews('pending')">Pending</button>
+           <button class="btn btn-dark" onclick="loadReviews('approved')">Approved</button>
+           <button class="btn btn-dark" onclick="loadReviews('rejected')">Rejected</button>
          </div>
        </div>
 
        <div class="section-card bg-secondary">
          <h5 class="mb-3">Review List</h5>
-         
-       <div class="review-card mb-3">
-         <div class="d-flex justify-content-between">
-           <div>
-             <strong>Movie Title</strong><br>
-             <small>Username</small><br>
-             <small>Rating: 7/10</small>
-           </div>
-           <div class="text-warning">
-             Pending
-           </div>
-         </div>
 
-         <div class="mt-3">
-           <input type="text" class="form-control" value="this movie was insane" readonly>
-         </div>
-
-         <div class="mt-3">
-           <button class="btn btn-success btn-sm">Approve</button>
-           <button class="btn btn-danger btn-sm">Reject</button>
-         </div>
-       </div>
-
-        <div class="review-card mb-3">
-         <div class="d-flex justify-content-between">
-           <div>
-             <strong>Movie Title</strong><br>
-             <small>Username</small><br>
-             <small>Rating: 5/10</small>
-           </div>
-           <div class="text-warning">
-             Pending
-           </div>
-         </div>
-
-         <div class="mt-3">
-           <input type="text" class="form-control" value="this movie was fine" readonly>
-         </div>
-
-         <div class="mt-3">
-           <button class="btn btn-success btn-sm">Approve</button>
-           <button class="btn btn-danger btn-sm">Reject</button>
-         </div>
-       </div>
-
-        <div class="review-card mb-3">
-         <div class="d-flex justify-content-between">
-           <div>
-             <strong>Movie Title</strong><br>
-             <small>Username</small><br>
-             <small>Rating: 1/10</small>
-           </div>
-           <div class="text-warning">
-             Pending
-           </div>
-         </div>
-
-         <div class="mt-3">
-           <input type="text" class="form-control" value="this movie was so bad" readonly>
-         </div>
-
-         <div class="mt-3">
-           <button class="btn btn-success btn-sm">Approve</button>
-           <button class="btn btn-danger btn-sm">Reject</button>
-         </div>
-       </div>
+         <div id = "review-list">
+     </div>
      </div>
      <script>
         requireAuth();

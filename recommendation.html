@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Browse Movies</title>
+    <title>Browse Recommendated Movies</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -64,14 +64,13 @@
         <div class = "col-md-4"> 
             <div class = "card bg-dark text-light border-0 h-100">
                 <img src = "${m.poster_url || 'placeholder.jpg'}" class="card-img-top">
-                div class = "card-body d-flex flex-colum text-center">
+                <div class = "card-body d-flex flex-colum text-center">
                     <h5 class = "card-title">${m.title}</h5>
                     <p class = "card-text">Release date: ${m.releaseDate || 'N/A'}</p>
                     <p class = "card-text">Ratings: ${m.rating ? m.rating.toFixed(1) + '/10' : 'N/A'}</p>
                     <a href="#" class ="btn btn-secondary mt-auto">Watch now</a>
                 </div>
             </div>
-        </div>
         `).join("");
     }
     loadRecs();

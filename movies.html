@@ -62,38 +62,6 @@
           </thead>
 
           <tbody id = "movieTableBody">
-            <tr>
-              <td>Movie Title 1</td>
-              <td>1999</td>
-              <td>Director Name</td>
-              <td>6.3</td>
-              <td>
-                <button class="btn btn-secondary btn-sm">Edit</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Movie Title 2</td>
-              <td>2004</td>
-              <td>Director Name</td>
-              <td>9.1</td>
-              <td>
-                <button class="btn btn-secondary btn-sm">Edit</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Movie Title 3</td>
-              <td>1975</td>
-              <td>Director Name</td>
-              <td>4.8</td>
-              <td>
-                <button class="btn btn-secondary btn-sm">Edit</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -110,8 +78,8 @@
             <td>${m.director}</td>
             <td>${m.rating?.toFixed(1) ?? "-"}</td>
             <td>
-              <button class="btn btn-secondary btn-sm" onclick="editMovie(${m.id})">Edit</button>"
-              <button class="btn btn-danger btn-sm" onclick="deleteMovie(${m.id})>Delete</button>"
+              <button class="btn btn-secondary btn-sm" onclick="editMovie(${m.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteMovie(${m.id})">Delete</button>
             </td>
         </tr>
         `).join("");
